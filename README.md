@@ -1,3 +1,7 @@
+# lighthouse2 fork by Teodor Nikolov
+This repo is a fork of the lighthouse2 rendering engine that was used to implement a real-time path tracer as part of the Advanced Graphics course at Utrecht University.
+You can build the source yourself to check it out, or you can look at the releases for a demo of the program.
+
 # lighthouse2
 Lighthouse 2 framework for real-time ray tracing
 
