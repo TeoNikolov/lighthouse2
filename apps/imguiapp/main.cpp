@@ -39,28 +39,140 @@ static CoreStats coreStats;
 //  +-----------------------------------------------------------------------------+
 void PrepareScene()
 {
-	// initialize scene
-	auto scene = renderer->GetScene();
-	auto sky = new HostSkyDome();
-	sky->Load( "data/sky_15.hdr" );
-	// Compensate for different evaluation in PBRT
-	sky->worldToLight = mat4::RotateX( -PI / 2 );
-	scene->SetSkyDome( sky );
-	// classic scene
-	materialFile = string( "data/pica/pica_materials.xml" );
-	renderer->AddScene( "scene.gltf", "data/pica/", mat4::Translate( 0, -10.2f, 0 ) );
-	int rootNode = renderer->FindNode( "RootNode (gltf orientation matrix)" );
-	renderer->SetNodeTransform( rootNode, mat4::RotateX( -PI / 2 ) );
+#if 1
+	if (SCENETYPE != SceneType::NONE) {
+		Camera* camera = renderer->GetCamera();
+		camera->position = DEFAULTCAMERAPOSITION;
+		camera->direction = DEFAULTCAMERADIRECTION;
+	}
+	switch (SCENETYPE) {
+	case SceneType::NONE: {
+		materialFile = string("data/pica/pica_materials.xml");
+		renderer->AddScene("default_scene.gltf", "data/pica/", mat4::Translate(0, -10.2f, 0));
+		int rootNode = renderer->FindNode("RootNode (gltf orientation matrix)");
+		renderer->SetNodeTransform(rootNode, mat4::RotateX(-PI / 2));
+		renderer->AddPointLight(float3({ 5.0, 7.0, 5.0 }), float3({ 200, 200, 200 }));
+		break;
+	}
+	case SceneType::PATHTRACER: {
+		materialFile = string("data/pica/pica_materials.xml");
+		int lightMat = renderer->AddMaterial(make_float3(7, 7, 7));
+		int quad = renderer->AddQuad(float3({ 0, -1, 0 }), float3({ 0, 10, 0 }), 5.0f, 5.0f, lightMat);
+		//renderer->AddScene("default_scene.gltf", "data/pica/");
+		renderer->AddScene("pathtracing.gltf", "data/pica/");
+		//int quad0 = renderer->AddQuad(float3({ 0, -1, 0 }), float3({-4.5, 10, 0}), 2.0f, 2.0f, lightMat);
+		//int quad1 = renderer->AddQuad(float3({ 0, -1, 0 }), float3({0, 10, -4.5}), 2.0f, 2.0f, lightMat);
+		//int quad2 = renderer->AddQuad(float3({ 0, -1, 0 }), float3({4.5, 10, 0}), 2.0f, 2.0f, lightMat);
+		//int quad3 = renderer->AddQuad(float3({ 0, -1, 0 }), float3({0, 10, 4.5}), 2.0f, 2.0f, lightMat);
+		renderer->AddInstance(quad);
+		//renderer->AddInstance(quad0);
+		//renderer->AddInstance(quad1);
+		//renderer->AddInstance(quad2);
+		//renderer->AddInstance(quad3);
+		Camera* camera = renderer->GetCamera();
+		camera->position = PATHTRACERCAMERAPOSITION4;
+		camera->direction = PATHTRACERCAMERADIRECTION4;
+
+		auto scene = renderer->GetScene();
+		auto sky = new HostSkyDome();
+		sky->Load( "data/sky_15.hdr" );
+		// Compensate for different evaluation in PBRT
+		sky->worldToLight = mat4::RotateX( -PI / 2 );
+		scene->SetSkyDome( sky );
+		break;
+	}
+	case SceneType::RAYPACKET: {
+		materialFile = string("data/pica/pica_materials.xml");
+		renderer->AddPointLight(float3({ 0, 5, 5 }), float3({ 200, 200, 200 }));
+		renderer->AddScene("default_scene.gltf", "data/pica/");
+		Camera* camera = renderer->GetCamera();
+		camera->position = DEFAULTCAMERAPOSITION;
+		camera->direction = DEFAULTCAMERADIRECTION;
+		break;
+	}
+	case SceneType::BVH: {
+		materialFile = string("data/pica/pica_materials.xml");
+		renderer->AddPointLight(float3({ -200, 200, 75 }), float3({ 40000, 40000, 40000 }));
+		renderer->AddScene("scene.gltf", "data/pica/fox/", mat4::Translate(0, 0, 0));
+		renderer->AddScene("scene.gltf", "data/pica/fox/", mat4::Translate(-50, 0, -150));
+		renderer->AddScene("scene.gltf", "data/pica/fox/", mat4::Translate(50, 0, -150));
+		renderer->AddScene("untitled.gltf", "data/pica/", mat4::Translate(0, 75, 125));
+		int gun = renderer->AddMesh("hp.obj", "data/verybigmeshes/gun2/", 4);
+		renderer->AddInstance(gun, mat4::Translate(0, 70, 15) * mat4::RotateY(PI));
+		Camera* camera = renderer->GetCamera();
+		camera->position = FOXCAMERAPOSITION;
+		camera->direction = FOXCAMERADIRECTION;
+		break;
+	}
+	case SceneType::WHITTED: {
+		materialFile = string("data/pica/pica_materials.xml");
+		renderer->AddScene("default_scene.gltf", "data/pica/", mat4::Translate(0, -10.2f, 0));
+		int rootNode = renderer->FindNode("RootNode (gltf orientation matrix)");
+		renderer->SetNodeTransform(rootNode, mat4::RotateX(-PI / 2));
+		renderer->AddPointLight(float3({ 5.0, 7.0, 5.0 }), float3({ 200, 200, 200 }));
+		int cube = renderer->AddMesh("cube_textured.obj", "data/pica/", 2);
+		mat4 transform = mat4();
+		transform.Identity();
+		transform.cell[0] = 4.0;
+		int instance1 = renderer->AddInstance(cube, transform);
+		break;
+	}
+	case SceneType::DIELECTRIC: {
+		materialFile = string("data/pica/pica_materials.xml");
+		renderer->AddScene("default_scene.gltf", "data/pica/", mat4::Translate(0, -10.2f, 0));
+		int rootNode = renderer->FindNode("RootNode (gltf orientation matrix)");
+		renderer->SetNodeTransform(rootNode, mat4::RotateX(-PI / 2));
+		renderer->AddPointLight(float3({ 0.0, 8.0, 15.0 }), float3({ 200, 200, 200 }));
+		Camera* camera = renderer->GetCamera();
+		camera->position = DIELECTRICCAMERAPOSITION;
+		camera->direction = DIELECTRICCAMERADIRECTION;
+		camera->FOV = DEFAULTFOV;
+		break;
+	}
+	case SceneType::SPOTLIGHT: {
+		materialFile = string("data/pica/pica_materials.xml");
+		renderer->AddScene("default_scene.gltf", "data/pica/", mat4::Translate(0, -10.2f, 0));
+		int rootNode = renderer->FindNode("RootNode (gltf orientation matrix)");
+		renderer->SetNodeTransform(rootNode, mat4::RotateX(-PI / 2));
+		renderer->AddSpotLight(float3({ 5, 8, 5 }), normalize(float3({ 0, -1, -1 })),
+			0.8, 0.5, float3({ 100, 100, 100 }));
+		renderer->AddSpotLight(float3({ -5, 8, 5 }), normalize(float3({ 0, -1, -1 })),
+			0.9, 0.8, float3({ 150, 150, 150 }));
+		break;
+	}
+	case SceneType::DIRECTIONALLIGHT: {
+		materialFile = string("data/pica/pica_materials.xml");
+		renderer->AddScene("directional_scene.gltf", "data/pica/", mat4::Translate(0, -10.2f, 0));
+		int rootNode = renderer->FindNode("RootNode (gltf orientation matrix)");
+		renderer->SetNodeTransform(rootNode, mat4::RotateX(-PI / 2));
+		renderer->AddDirectionalLight(normalize(float3({ -1.0, -2.0, -0.5 })), float3({ 1.0, 1.0, 1.0 }));
+		Camera* camera = renderer->GetCamera();
+		camera->position = DIRECTIONALCAMERAPOSITION;
+		break;
+	}
+	case SceneType::AREALIGHT: {
+		materialFile = string("data/pica/pica_materials.xml");
+		renderer->AddScene("default_scene.gltf", "data/pica/", mat4::Translate(0, -10.2f, 0));
+		int rootNode = renderer->FindNode("RootNode (gltf orientation matrix)");
+		renderer->SetNodeTransform(rootNode, mat4::RotateX(-PI / 2));
+		int lightMat = renderer->AddMaterial(make_float3(200, 200, 200));
+		int lightQuad = renderer->AddQuad(normalize(make_float3(0, 1.25, -1)), make_float3(0, -3, 9), 2.0f, 4.0f, lightMat);
+		int lightInst = renderer->AddInstance(lightQuad);
+		break;
+	}
+	}
+#endif
 #if 1
 	// overhead light, use regular PT
-	int lightMat = renderer->AddMaterial( make_float3( 50, 50, 45 ) );
-	int lightQuad = renderer->AddQuad( make_float3( 0, -1, 0 ), make_float3( 0, 26.0f, 0 ), 6.9f, 6.9f, lightMat );
+	//int lightMat = renderer->AddMaterial( make_float3( 50, 50, 45 ) );
+	//int lightQuad = renderer->AddQuad(normalize(make_float3(0, 1.5, -1)), make_float3(0, -3, 9), 3.0f, 3.0f, lightMat);
 #else
 	// difficult light; use BDPT
-	int lightMat = renderer->AddMaterial( make_float3( 500, 500, 400 ) );
-	int lightQuad = renderer->AddQuad( make_float3( 0.15188693, -0.32204545, 0.93446094 ), make_float3( -12.938412, -5.0068984, -25.725601 ), 1.9f, 1.9f, lightMat );
+	//int lightMat = renderer->AddMaterial( make_float3( 500, 500, 400 ) );
+	//int lightQuad = renderer->AddQuad( make_float3( 0.15188693, -0.32204545, 0.93446094 ), make_float3( -12.938412, -5.0068984, -25.725601 ), 1.9f, 1.9f, lightMat );
 #endif
-	int lightInst = renderer->AddInstance( lightQuad );
+	//int lightInst = renderer->AddInstance( lightQuad );
+
 	// renderer->AddPointLight( make_float3( 20, 26, 20 ), make_float3( 1000, 1000, 1000 ) );
 	// optional animated models
 	// renderer->AddScene( "CesiumMan.glb", "data/", mat4::Translate( 0, -2, -9 ) );
@@ -76,7 +188,7 @@ void PrepareScene()
 bool HandleInput( float frameTime )
 {
 	// handle keyboard input
-	float tspd = (keystates[GLFW_KEY_LEFT_SHIFT] ? 15.0f : 5.0f) * frameTime, rspd = 2.5f * frameTime;
+	float tspd = (keystates[GLFW_KEY_LEFT_SHIFT] ? 50.0f : 5.0f) * frameTime, rspd = 2.5f * frameTime;
 	bool changed = false;
 	Camera *camera = renderer->GetCamera();
 	if (keystates[GLFW_KEY_A]) { changed = true; camera->TranslateRelative( make_float3( -tspd, 0, 0 ) ); }
@@ -137,10 +249,10 @@ int main()
 	// initialize renderer: pick one
 	// renderer = RenderAPI::CreateRenderAPI( "RenderCore_Optix7filter" );		// OPTIX7 core, with filtering (static scenes only for now)
 	// renderer = RenderAPI::CreateRenderAPI( "RenderCore_Optix7" );			// OPTIX7 core, best for RTX devices
-	renderer = RenderAPI::CreateRenderAPI( "RenderCore_OptixPrime_B" );			// OPTIX PRIME, best for pre-RTX CUDA devices
+	// renderer = RenderAPI::CreateRenderAPI( "RenderCore_OptixPrime_B" );			// OPTIX PRIME, best for pre-RTX CUDA devices
 	// renderer = RenderAPI::CreateRenderAPI( "RenderCore_PrimeRef" );			// REFERENCE, for image validation
-	// renderer = RenderAPI::CreateRenderAPI( "RenderCore_SoftRasterizer" );	// RASTERIZER, your only option if not on NVidia
-	// renderer = RenderAPI::CreateRenderAPI( "RenderCore_Minimal" );			// MINIMAL example, to get you started on your own core
+	 //renderer = RenderAPI::CreateRenderAPI( "RenderCore_SoftRasterizer" );	// RASTERIZER, your only option if not on NVidia
+	 renderer = RenderAPI::CreateRenderAPI( "RenderCore_Minimal" );			// MINIMAL example, to get you started on your own core
 	// renderer = RenderAPI::CreateRenderAPI( "RenderCore_Vulkan_RT" );			// Meir's Vulkan / RTX core
 	// renderer = RenderAPI::CreateRenderAPI( "RenderCore_OptixPrime_BDPT" );	// Peter's OptixPrime / BDPT core
 	// renderer = RenderAPI::CreateRenderAPI( "RenderCore_OptixPrime_PBRT" );	// Marijn's PBRT core
@@ -211,7 +323,8 @@ int main()
 		ImGui::Text( "position: %5.2f, %5.2f, %5.2f", camPos.x, camPos.y, camPos.z );
 		ImGui::Text( "viewdir:  %5.2f, %5.2f, %5.2f", camDir.x, camDir.y, camDir.z );
 		ImGui::SliderFloat( "FOV", &renderer->GetCamera()->FOV, 10, 90 );
-		ImGui::SliderFloat( "aperture", &renderer->GetCamera()->aperture, 0, 0.025f );
+		ImGui::SliderFloat( "aperture", &renderer->GetCamera()->aperture, 0.001, 0.025f );
+		ImGui::SliderFloat( "focaldistance", &renderer->GetCamera()->focalDistance, 0.1, 20.0f );
 		ImGui::SliderFloat( "distortion", &renderer->GetCamera()->distortion, 0, 0.5f );
 		ImGui::Combo( "tonemap", &renderer->GetCamera()->tonemapper, "clamp\0reinhard\0reinhard ext\0reinhard lum\0reinhard jodie\0uncharted2\0\0" );
 		ImGui::SliderFloat( "brightness", &renderer->GetCamera()->brightness, 0, 0.5f );

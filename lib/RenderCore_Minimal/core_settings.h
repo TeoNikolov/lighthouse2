@@ -25,6 +25,19 @@
 using namespace lighthouse2;
 
 #include "core_api_base.h"
+#include "omp.h"
+
+#include "ray.h"
+#include "aabb.h"
+#include "raypacket.h"
+#include "hitinfo.h"
+#include "bvh.h"
+#include "light.h"
+#include "texture.h"
+#include "material.h"
+#include "mesh.h"
+#include "sky.h"
+
 #include "rendercore.h"
 
 using namespace lh2core;

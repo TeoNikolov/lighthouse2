@@ -19,18 +19,6 @@ namespace lh2core
 {
 
 //  +-----------------------------------------------------------------------------+
-//  |  Mesh                                                                       |
-//  |  Minimalistic mesh storage.                                           LH2'19|
-//  +-----------------------------------------------------------------------------+
-class Mesh
-{
-public:
-	float4* vertices = 0;							// vertex data received via SetGeometry
-	int vcount = 0;									// vertex count
-	CoreTri* triangles = 0;							// 'fat' triangle data
-};
-
-//  +-----------------------------------------------------------------------------+
 //  |  RenderCore                                                                 |
 //  |  Encapsulates device code.                                            LH2'19|
 //  +-----------------------------------------------------------------------------+
@@ -46,28 +34,46 @@ public:
 	void Shutdown();
 
 	// unimplemented for the minimal core
-	inline void SetProbePos( const int2 pos ) override {}
-	inline void Setting( const char* name, float value ) override {}
-	inline void SetTextures( const CoreTexDesc* tex, const int textureCount ) override {}
-	inline void SetMaterials( CoreMaterial* mat, const int materialCount ) override {}
-	inline void SetLights( const CoreLightTri* areaLights, const int areaLightCount,
+	inline void SetProbePos(const int2 pos) override {};
+	inline void Setting(const char* name, float value) override {};
+	void SetSkyData(const float3* pixels, const uint width, const uint height, const mat4& worldToLight);
+	
+	// implemented for the minimal core
+	void SetTextures(const CoreTexDesc* tex, const int textureCount);
+	void SetMaterials(CoreMaterial* mat, const int materialCount);
+	void SetLights(const CoreLightTri* areaLights, const int areaLightCount,
 		const CorePointLight* pointLights, const int pointLightCount,
 		const CoreSpotLight* spotLights, const int spotLightCount,
-		const CoreDirectionalLight* directionalLights, const int directionalLightCount ) override
-	{
-	}
-	inline void SetSkyData( const float3* pixels, const uint width, const uint height, const mat4& worldToLight ) override {}
-	inline void SetInstance( const int instanceIdx, const int modelIdx, const mat4& transform ) override {}
-	inline void UpdateToplevel() override {}
+		const CoreDirectionalLight* directionalLights, const int directionalLightCount);
+	void SetInstance(const int instanceIdx, const int modelIdx, const mat4& transform);
+	void UpdateToplevel() override;
 
-	// internal methods
+	// custom methods
+	bool TraceShadow(const Ray);
+	float2 RejectionSampleDisk(float radius = 1.0f);
+	float3 DiffuseReflection(float3 normal);
+	float3 CosineWeightedDiffuseReflection(float3 normal);
+	float3 WhittedTrace(Ray& ray, const int depth, int& traverseDepth);
+	float3 WhittedDirectIllumination(const float3 intersection, const float3 hitNormal);
+	float3 PathTrace(Ray& ray, int depth, int& traverseDepth, bool lastSpecular, float3 pweight);
+	float3 PathDirectIllumination(const float3 intersection, const float3 hitNormal, float3 viewDir,
+		float3 specular, float3 diffuse, float alpha, bool doMIS);
+	void Trace(RayPacket& rayPacket, Frustum& frustum, const int depth, int* traverseDepth, float3* colors);
+	bool NearestIntersection(Ray& ray, HitInfo* hitInfo);
+	bool NearestIntersection(RayPacket& rayPacket, Frustum& frustum, HitInfo* hitInfo);
+
+	CoreStats coreStats;							// rendering statistics
 private:
 	// data members
 	Bitmap* screen = 0;								// temporary storage of RenderCore output; will be copied to render target
 	int targetTextureID = 0;						// ID of the target OpenGL texture
-	vector<Mesh> meshes;							// mesh data storage
-public:
-	CoreStats coreStats;							// rendering statistics
+	vector<Mesh*> meshes;							// mesh data storage
+	vector<MeshInstance*> instances;
+	vector<Light*> lights;
+	vector<Material*> mats;
+	vector<Texture*> texs;
+	TopBVH* topBVH;
+	Sky* sky;
 };
 
 } // namespace lh2core
