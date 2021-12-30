@@ -1,0 +1,147 @@
+<materials>
+    <material_count>7</material_count>
+    <material_0>
+        <name>Material</name>
+        <origin>data/pica/ag5.gltf</origin>
+        <id>0</id>
+        <flags>129</flags>
+        <color b="0.56862748" g="0.51648682" r="0.12543252"/>
+        <absorption b="0" g="0" r="0"/>
+        <metallic>0.74599999</metallic>
+        <subsurface>0</subsurface>
+        <specular>0.5</specular>
+        <roughness>0.5</roughness>
+        <specularTint>0</specularTint>
+        <anisotropic>0</anisotropic>
+        <sheen>0</sheen>
+        <sheenTint>0</sheenTint>
+        <clearcoat>0</clearcoat>
+        <clearcoatGloss>1</clearcoatGloss>
+        <transmission>0</transmission>
+        <eta>1</eta>
+        <custom0>0</custom0>
+        <custom1>0</custom1>
+        <custom2>0</custom2>
+        <custom3>0</custom3>
+    </material_0>
+    <material_1>
+        <name>Material.003</name>
+        <origin>data/pica/ag5.gltf</origin>
+        <id>1</id>
+        <flags>129</flags>
+        <color b="0.050358001" g="0.024478" r="0.80000001"/>
+        <absorption b="0" g="0" r="0"/>
+        <metallic>0.5</metallic>
+        <subsurface>0</subsurface>
+        <specular>0.5</specular>
+        <roughness>0.5</roughness>
+        <specularTint>0</specularTint>
+        <anisotropic>0</anisotropic>
+        <sheen>0</sheen>
+        <sheenTint>0</sheenTint>
+        <clearcoat>0</clearcoat>
+        <clearcoatGloss>1</clearcoatGloss>
+        <transmission>0</transmission>
+        <eta>1</eta>
+        <custom0>0</custom0>
+        <custom1>0</custom1>
+        <custom2>0</custom2>
+        <custom3>0</custom3>
+    </material_1>
+    <material_2>
+        <name>Material.005</name>
+        <origin>data/pica/ag5.gltf</origin>
+        <id>2</id>
+        <flags>129</flags>
+        <color b="0.79004502" g="0.80000001" r="0.162678"/>
+        <absorption b="0" g="0" r="0"/>
+        <metallic>0.5</metallic>
+        <subsurface>0</subsurface>
+        <specular>0.5</specular>
+        <roughness>0.5</roughness>
+        <specularTint>0</specularTint>
+        <anisotropic>0</anisotropic>
+        <sheen>0</sheen>
+        <sheenTint>0</sheenTint>
+        <clearcoat>0</clearcoat>
+        <clearcoatGloss>1</clearcoatGloss>
+        <transmission>0</transmission>
+        <eta>1</eta>
+        <custom0>0</custom0>
+        <custom1>0</custom1>
+        <custom2>0</custom2>
+        <custom3>0</custom3>
+    </material_2>
+    <material_3>
+        <name>Material.001</name>
+        <origin>data/pica/ag5.gltf</origin>
+        <id>3</id>
+        <flags>129</flags>
+        <color b="0.80000001" g="0.80000001" r="0.80000001"/>
+        <absorption b="0" g="0" r="0"/>
+        <metallic>0.5</metallic>
+        <subsurface>0</subsurface>
+        <specular>0.5</specular>
+        <roughness>0.5</roughness>
+        <specularTint>0</specularTint>
+        <anisotropic>0</anisotropic>
+        <sheen>0</sheen>
+        <sheenTint>0</sheenTint>
+        <clearcoat>0</clearcoat>
+        <clearcoatGloss>1</clearcoatGloss>
+        <transmission>0</transmission>
+        <eta>1</eta>
+        <custom0>0</custom0>
+        <custom1>0</custom1>
+        <custom2>0</custom2>
+        <custom3>0</custom3>
+    </material_3>
+    <material_4>
+        <name>Material.004</name>
+        <origin>data/pica/ag5.gltf</origin>
+        <id>4</id>
+        <flags>129</flags>
+        <color b="0.053236999" g="0.78945398" r="0.80000001"/>
+        <absorption b="0" g="0" r="0"/>
+        <metallic>0.5</metallic>
+        <subsurface>0</subsurface>
+        <specular>0.5</specular>
+        <roughness>0.5</roughness>
+        <specularTint>0</specularTint>
+        <anisotropic>0</anisotropic>
+        <sheen>0</sheen>
+        <sheenTint>0</sheenTint>
+        <clearcoat>0</clearcoat>
+        <clearcoatGloss>1</clearcoatGloss>
+        <transmission>0</transmission>
+        <eta>1</eta>
+        <custom0>0</custom0>
+        <custom1>0</custom1>
+        <custom2>0</custom2>
+        <custom3>0</custom3>
+    </material_4>
+    <material_5>
+        <name>Material.002</name>
+        <origin>data/pica/ag5.gltf</origin>
+        <id>5</id>
+        <flags>129</flags>
+        <color b="0.80000001" g="0.024052" r="0.032884002"/>
+        <absorption b="0" g="0" r="0"/>
+        <metallic>0.5</metallic>
+        <subsurface>0</subsurface>
+        <specular>0.5</specular>
+        <roughness>0.5</roughness>
+        <specularTint>0</specularTint>
+        <anisotropic>0</anisotropic>
+        <sheen>0</sheen>
+        <sheenTint>0</sheenTint>
+        <clearcoat>0</clearcoat>
+        <clearcoatGloss>1</clearcoatGloss>
+        <transmission>0</transmission>
+        <eta>1</eta>
+        <custom0>0</custom0>
+        <custom1>0</custom1>
+        <custom2>0</custom2>
+        <custom3>0</custom3>
+    </material_5>
+</materials>

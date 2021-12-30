@@ -19,18 +19,6 @@ namespace lh2core
 {
 
 //  +-----------------------------------------------------------------------------+
-//  |  Mesh                                                                       |
-//  |  Minimalistic mesh storage.                                           LH2'19|
-//  +-----------------------------------------------------------------------------+
-class Mesh
-{
-public:
-	float4* vertices = 0;							// vertex data received via SetGeometry
-	int vcount = 0;									// vertex count
-	CoreTri* triangles = 0;							// 'fat' triangle data
-};
-
-//  +-----------------------------------------------------------------------------+
 //  |  RenderCore                                                                 |
 //  |  Encapsulates device code.                                            LH2'19|
 //  +-----------------------------------------------------------------------------+
@@ -41,8 +29,19 @@ public:
 	void Init();
 	void SetTarget( GLTexture* target );
 	void SetGeometry( const int meshIdx, const float4* vertexData, const int vertexCount, const int triangleCount, const CoreTri* triangles, const uint* alphaFlags = 0 );
+	void SetInstance(const int instanceIdx, const int modelIdx, const mat4& transform = mat4::Identity());
+	void SetMaterials(CoreMaterial* mat, const CoreMaterialEx* matEx, const int materialCount);
+	void SetTextures(const CoreTexDesc* tex, const int textureCount);
 	void Render( const ViewPyramid& view, const Convergence converge );
 	void Shutdown();
+	void SetLights(const CoreLightTri* areaLights, const int areaLightCount,
+		const CorePointLight* pointLights, const int pointLightCount,
+		const CoreSpotLight* spotLights, const int spotLightCount,
+		const CoreDirectionalLight* directionalLights, const int directionalLightCount);
+	bool TraceShadow(const Ray);
+	float3 Trace(const Ray& ray, const int depth);
+	float3 DirectIllumination(const float3 intersection, const float3 hitNormal);
+	bool NearestIntersection(const Ray, HitInfo* hitInfo);
 	// internal methods
 private:
 	// data members

@@ -27,6 +27,21 @@
 // default screen size
 #define SCRWIDTH			1280
 #define SCRHEIGHT			720
+#define DEFAULTCAMERAPOSITION float3({0, 0, 11.994759})
+#define DEFAULTCAMERADIRECTION float3({-0.0029208283, -0.021947961, -0.99975485})
+#define DIRECTIONALCAMERAPOSITION float3({0, 5, 11.994759})
+#define DIELECTRICCAMERAPOSITION float3({8.0302057f, 0.43783143, -6.3139606})
+#define DIELECTRICCAMERADIRECTION float3({-0.57642096, -0.01068913, 0.817083})
+#define DEFAULTFOV 90.0f
+#define TESTTYPE TestType::WHITTED
+enum TestType {
+	NONE,
+	WHITTED,
+	SPOTLIGHT,
+	DIRECTIONALLIGHT,
+	AREALIGHT,
+	DIELECTRIC
+};
 
 // skydome defines
 // #define IBL						// calculate pdf and cdf for ibl renderer

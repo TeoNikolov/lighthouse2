@@ -49,22 +49,78 @@ void PrepareScene()
 	renderer->SetNodeTransform( rootNode, mat4::RotateX( -PI / 2 ) );
 	animPaused = true;
 #else
-	// classic scene
-	materialFile = string( "data/pica/pica_materials.xml" );
-	renderer->AddScene( "scene.gltf", "data/pica/", mat4::Translate( 0, -10.2f, 0 ) );
-	int rootNode = renderer->FindNode( "RootNode (gltf orientation matrix)" );
-	renderer->SetNodeTransform( rootNode, mat4::RotateX( -PI / 2 ) );
+	if (TESTTYPE != TestType::NONE) {
+		Camera* camera = renderer->GetCamera();
+		camera->position = DEFAULTCAMERAPOSITION;
+		camera->direction = DEFAULTCAMERADIRECTION;
+		camera->FOV = DEFAULTFOV;
+	}
+	switch (TESTTYPE) {
+	case TestType::WHITTED: {
+		materialFile = string("data/pica/pica_materials.xml");
+		renderer->AddScene("default_scene.gltf", "data/pica/", mat4::Translate(0, -10.2f, 0));
+		int rootNode = renderer->FindNode("RootNode (gltf orientation matrix)");
+		renderer->SetNodeTransform(rootNode, mat4::RotateX(-PI / 2));
+		renderer->AddPointLight(float3({ 5.0, 7.0, 5.0 }), float3({ 200, 200, 200 }));
+		int cube = renderer->AddMesh("cube_textured.obj", "data/pica/", 2);
+		renderer->AddInstance(cube);
+		break;
+	}
+	case TestType::DIELECTRIC: {
+		materialFile = string("data/pica/pica_materials.xml");
+		renderer->AddScene("default_scene.gltf", "data/pica/", mat4::Translate(0, -10.2f, 0));
+		int rootNode = renderer->FindNode("RootNode (gltf orientation matrix)");
+		renderer->SetNodeTransform(rootNode, mat4::RotateX(-PI / 2));
+		renderer->AddPointLight(float3({ 0.0, 8.0, 15.0 }), float3({ 200, 200, 200 }));
+		Camera* camera = renderer->GetCamera();
+		camera->position = DIELECTRICCAMERAPOSITION;
+		camera->direction = DIELECTRICCAMERADIRECTION;
+		camera->FOV = DEFAULTFOV;
+		break;
+	}
+	case TestType::SPOTLIGHT: {
+		materialFile = string("data/pica/pica_materials.xml");
+		renderer->AddScene("default_scene.gltf", "data/pica/", mat4::Translate(0, -10.2f, 0));
+		int rootNode = renderer->FindNode("RootNode (gltf orientation matrix)");
+		renderer->SetNodeTransform(rootNode, mat4::RotateX(-PI / 2));
+		renderer->AddSpotLight(float3({ 5, 8, 5 }), normalize(float3({ 0, -1, -1 })),
+			0.8, 0.5, float3({ 100, 100, 100 }));
+		renderer->AddSpotLight(float3({ -5, 8, 5 }), normalize(float3({ 0, -1, -1 })),
+			0.9, 0.8, float3({ 150, 150, 150 }));
+		break;
+	}
+	case TestType::DIRECTIONALLIGHT: {
+		materialFile = string("data/pica/pica_materials.xml");
+		renderer->AddScene("directional_scene.gltf", "data/pica/", mat4::Translate(0, -10.2f, 0));
+		int rootNode = renderer->FindNode("RootNode (gltf orientation matrix)");
+		renderer->SetNodeTransform(rootNode, mat4::RotateX(-PI / 2));
+		renderer->AddDirectionalLight(normalize(float3({ -1.0, -2.0, -0.5 })), float3({ 1.0, 1.0, 1.0 }));
+		Camera* camera = renderer->GetCamera();
+		camera->position = DIRECTIONALCAMERAPOSITION;
+		break;
+	}
+	case TestType::AREALIGHT: {
+		materialFile = string("data/pica/pica_materials.xml");
+		renderer->AddScene("default_scene.gltf", "data/pica/", mat4::Translate(0, -10.2f, 0));
+		int rootNode = renderer->FindNode("RootNode (gltf orientation matrix)");
+		renderer->SetNodeTransform(rootNode, mat4::RotateX(-PI / 2));
+		int lightMat = renderer->AddMaterial(make_float3(200, 200, 200));
+		int lightQuad = renderer->AddQuad(normalize(make_float3(0, 1.25, -1)), make_float3(0, -3, 9), 2.0f, 4.0f, lightMat);
+		int lightInst = renderer->AddInstance(lightQuad);
+		break;
+	}
+	}
 #endif
 #if 1
 	// overhead light, use regular PT
-	int lightMat = renderer->AddMaterial( make_float3( 50, 50, 45 ) );
-	int lightQuad = renderer->AddQuad( make_float3( 0, -1, 0 ), make_float3( 0, 26.0f, 0 ), 6.9f, 6.9f, lightMat );
+	//int lightMat = renderer->AddMaterial( make_float3( 50, 50, 45 ) );
+	//int lightQuad = renderer->AddQuad(normalize(make_float3(0, 1.5, -1)), make_float3(0, -3, 9), 3.0f, 3.0f, lightMat);
 #else
 	// difficult light; use BDPT
-	int lightMat = renderer->AddMaterial( make_float3( 500, 500, 400 ) );
-	int lightQuad = renderer->AddQuad( make_float3( 0.15188693, -0.32204545, 0.93446094 ), make_float3( -12.938412, -5.0068984, -25.725601 ), 1.9f, 1.9f, lightMat );
+	//int lightMat = renderer->AddMaterial( make_float3( 500, 500, 400 ) );
+	//int lightQuad = renderer->AddQuad( make_float3( 0.15188693, -0.32204545, 0.93446094 ), make_float3( -12.938412, -5.0068984, -25.725601 ), 1.9f, 1.9f, lightMat );
 #endif
-	int lightInst = renderer->AddInstance( lightQuad );
+	//int lightInst = renderer->AddInstance( lightQuad );
 	// optional animated models
 	// renderer->AddScene( "CesiumMan.glb", "data/", mat4::Translate( 0, -2, -9 ) );
 	// renderer->AddScene( "project_polly.glb", "data/", mat4::Translate( 4.5f, -5.45f, -5.2f ) * mat4::Scale( 2 ) );
@@ -79,7 +135,7 @@ void PrepareScene()
 bool HandleInput( float frameTime )
 {
 	// handle keyboard input
-	float tspd = (keystates[GLFW_KEY_LEFT_SHIFT] ? 15.0f : 5.0f) * frameTime, rspd = 2.5f * frameTime;
+	float tspd = (keystates[GLFW_KEY_LEFT_SHIFT] ? 0.5f : 5.0f) * frameTime, rspd = 2.5f * frameTime;
 	bool changed = false;
 	Camera *camera = renderer->GetCamera();
 	if (keystates[GLFW_KEY_A]) { changed = true; camera->TranslateRelative( make_float3( -tspd, 0, 0 ) ); }
@@ -138,15 +194,10 @@ int main()
 	InitImGui();
 
 	// initialize renderer: pick one
-	// renderer = RenderAPI::CreateRenderAPI( "RenderCore_Optix7filter" );		// OPTIX7 core, with filtering (static scenes only for now)
-	// renderer = RenderAPI::CreateRenderAPI( "RenderCore_Optix7" );			// OPTIX7 core, best for RTX devices
-	renderer = RenderAPI::CreateRenderAPI( "RenderCore_OptixPrime_B" );		// OPTIX PRIME, best for pre-RTX CUDA devices
 	// renderer = RenderAPI::CreateRenderAPI( "RenderCore_PrimeRef" );			// REFERENCE, for image validation
 	// renderer = RenderAPI::CreateRenderAPI( "RenderCore_SoftRasterizer" );	// RASTERIZER, your only option if not on NVidia
-	// renderer = RenderAPI::CreateRenderAPI( "RenderCore_Minimal" );			// MINIMAL example, to get you started on your own core
-	// renderer = RenderAPI::CreateRenderAPI( "RenderCore_Vulkan_RT" );			// Meir's Vulkan / RTX core
-	// renderer = RenderAPI::CreateRenderAPI( "RenderCore_OptixPrime_BDPT" );	// Peter's OptixPrime / BDPT core
-
+	renderer = RenderAPI::CreateRenderAPI( "RenderCore_Minimal" );			// MINIMAL example, to get you started on your own core
+	
 	renderer->DeserializeCamera( "camera.xml" );
 	// initialize scene
 	PrepareScene();
