@@ -44,10 +44,10 @@ public:
 	// SetMaterials: update the material list used by the RenderCore. Textures referenced by the materials must be set in advance.
 	void SetMaterials( CoreMaterial* mat, const CoreMaterialEx* matEx, const int materialCount );
 	// SetLights: update the point lights, spot lights and directional lights.
-	void SetLights( const CoreLightTri* areaLights, const int areaLightCount,
+	void SetLights(const CoreLightTri* areaLights, const int areaLightCount,
 		const CorePointLight* pointLights, const int pointLightCount,
 		const CoreSpotLight* spotLights, const int spotLightCount,
-		const CoreDirectionalLight* directionalLights, const int directionalLightCount ) { /* ignore lights for now. */ }
+		const CoreDirectionalLight* directionalLights, const int directionalLightCount);
 	// SetSkyData: specify the data required for sky dome rendering.
 	void SetSkyData( const float3* pixels, const uint width, const uint height ) { /* ignore sky data for the minimal core. */ }
 	// SetGeometry: update the geometry for a single mesh.
@@ -55,7 +55,7 @@ public:
 	// SetInstance: update the data on a single instance.
 	void SetInstance( const int instanceIdx, const int modelIdx, const mat4& transform = mat4::Identity() );
 	// UpdateTopLevel: trigger a top-level BVH update.
-	void UpdateToplevel() { /* not implemented for the minimal core. */ }
+	void UpdateToplevel();
 };
 
 } // namespace lh2core
