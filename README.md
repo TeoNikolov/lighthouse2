@@ -2,6 +2,10 @@
 This repo is a fork of the lighthouse2 rendering engine that was used to implement a real-time path tracer as part of the Advanced Graphics course at Utrecht University.
 You can build the source yourself to check it out, or you can look at the releases for a demo of the program.
 
+**The master branch does not contain the actual files of the assignments. Use the 'assignment' branch for this.** I was not able to figure out how to fork an old commit except to fork the current repo and branch from an old commit. If you have any idea how I could do it _properly_, please slap a comment wherever possible or just contact me through my GitHub account.
+
+And thanks to @jbikker for being the awesome teacher he is.
+
 # lighthouse2
 Lighthouse 2 framework for real-time ray tracing
 
