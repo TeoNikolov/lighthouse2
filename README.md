@@ -8,7 +8,7 @@ And thanks to @jbikker for being the awesome teacher he is.
 
 ![](https://user-images.githubusercontent.com/23489933/147778386-c0882c2b-4a0c-4126-a7f7-8950836c4d92.png)
 
-# lighthouse2
+# lighthouse2 - Official README
 Lighthouse 2 framework for real-time ray tracing
 
 This is the public repo for Lighthouse 2, a rendering framework for real-time ray tracing / path tracing experiments. 
