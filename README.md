@@ -6,6 +6,8 @@ You can build the source yourself to check it out, or you can look at the releas
 
 And thanks to @jbikker for being the awesome teacher he is.
 
+![](https://user-images.githubusercontent.com/23489933/147778386-c0882c2b-4a0c-4126-a7f7-8950836c4d92.png)
+
 # lighthouse2
 Lighthouse 2 framework for real-time ray tracing
 
